@@ -1,8 +1,12 @@
 import { ButtonHTMLAttributes, useEffect, useState } from 'react';
 
+const variants = ['solid', 'outline', 'soft'];
+const sizes = ['large', 'medium', 'small'];
+const colors = ['indigo', 'blue'];
+
 type color = 'indigo' | 'blue';
 type size = 'large' | 'medium' | 'small';
-type variant = 'solid' | 'outline';
+type variant = 'solid' | 'outline' | 'soft';
 
 interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
   title: string;
@@ -16,13 +20,18 @@ interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const colorOptions = {
-  blue: 'text-white bg-blue-500 hover:bg-blue-600 hover:active:bg-blue-700',
-  indigo:
+  solidblue:
+    'text-white bg-blue-500 hover:bg-blue-600 hover:active:bg-blue-700',
+  solidindigo:
     'text-white bg-indigo-500 hover:bg-indigo-600 hover:active:bg-indigo-700',
   outlineindigo:
     'text-indigo-500 border border-indigo-500 bg-white hover:bg-indigo-50 hover:active:bg-indigo-100',
   outlineblue:
     'text-blue-500 border border-blue-500 bg-white hover:bg-blue-50 hover:active:bg-blue-100',
+  softindigo:
+    'text-indigo-600 bg-indigo-50 hover:bg-indigo-100 hover:active:bg-indigo-200',
+  softblue:
+    'text-blue-600 bg-blue-50 hover:bg-blue-100 hover:active:bg-blue-200',
 };
 
 const sizeOptions = {
@@ -47,23 +56,15 @@ function Button(props: Props) {
   } = props;
 
   useEffect(() => {
-    let _color = colorOptions.indigo;
-    let _size = sizeOptions.medium;
-    let _block = '';
-    let _rounded = 'rounded-md';
+    const _variant = variants.includes(variant) ? variant : 'solid';
+    const _color = colors.includes(color)
+      ? colorOptions[`${_variant}${color}`]
+      : colorOptions[`${_variant}indigo`];
+    const _size = sizes.includes(size) ? sizeOptions[size] : sizeOptions.medium;
+    const _block = block ? 'w-full' : '';
+    const _rounded = rounded ? 'rounded-full' : 'rounded-md';
 
-    if (variant === 'outline') {
-      if (['indigo', 'blue'].includes(color))
-        _color = colorOptions[`outline${color}`];
-    } else {
-      if (['indigo', 'blue'].includes(color)) _color = colorOptions[color];
-    }
-
-    if (['large', 'medium', 'small'].includes(size)) _size = sizeOptions[size];
-    if (block) _block = 'w-full';
-    if (rounded) _rounded = 'rounded-full';
-
-    const css = `box-border flex items-center gap-2 transition-all ${_color} ${_size} ${_block} ${_rounded}`;
+    const css = `box-border flex font-semibold justify-center items-center gap-2 transition-all ${_color} ${_size} ${_block} ${_rounded}`;
 
     setCustomClasses(css);
   }, [color, size, block, rounded]);

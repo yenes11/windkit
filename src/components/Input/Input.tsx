@@ -1,41 +1,51 @@
-import { InputHTMLAttributes, useEffect, useState } from 'react';
+import { InputHTMLAttributes, forwardRef } from 'react';
+import { getInputClasses } from '../../utils/helpers';
 
 const variants = ['filled', 'outline'];
 const sizes = ['small', 'medium', 'large'];
 
-interface Props extends InputHTMLAttributes<HTMLInputElement> {
+interface Props extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size'> {
   variant?: 'filled' | 'outline';
+  size?: 'small' | 'medium' | 'large';
+  htmlSize?: number | undefined;
 }
 
 const variantOpstions = {
-  outline: '',
-  filled: 'bg-stale-50',
+  outline: 'ring-1 ring-gray-200',
+  filled: 'bg-slate-100',
 };
+
+const defaultClasses =
+  'shadow transition-all outline-none border-0 text-gray-600 rounded-md w-full hover:ring-gray-300 focus:ring-2 focus:ring-indigo-600';
 
 const sizeOptions = {
-  small: 'px-2 py-1',
+  small: 'px-2 py-1 text-sm',
   medium: 'px-2.5 py-1.5',
-  large: 'px-3 py-2',
+  large: 'px-3 py-2 text-xl',
 };
 
-function Input(props: Props) {
-  const { variant = 'outline', size = 'medium', ...rest } = props;
-  const [customClasses, setCustomClasses] = useState('');
-
-  useEffect(() => {
-    const _variant = variants.includes(variant)
-      ? variantOpstions[variant]
-      : variantOpstions.outline;
-    const _size = sizes.includes(size);
-  }, []);
+const Input = forwardRef<HTMLInputElement, Props>(function Input(
+  props: Props,
+  ref
+) {
+  const {
+    variant = 'outline',
+    disabled = false,
+    size = 'medium',
+    htmlSize,
+    ...rest
+  } = props;
 
   return (
     <input
-      {...rest}
+      ref={ref}
+      disabled={disabled}
+      size={htmlSize}
       placeholder="Enter your email"
-      className="bg-slate-50 transition-all outline-none border-0 ring-1 text-gray-600 ring-gray-200 rounded-md w-full hover:ring-gray-300 focus:ring-2 focus:ring-indigo-600"
+      className={getInputClasses(variant, size, disabled)}
+      {...rest}
     />
   );
-}
+});
 
 export default Input;

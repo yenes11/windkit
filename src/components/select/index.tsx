@@ -31,7 +31,7 @@ function Select() {
   };
 
   const handleSelect = (index: number) => {
-    // setActiveIndex(index);
+    setActiveIndex(index);
     setSelectedIndex(index);
     setIsOpen(false);
   };
